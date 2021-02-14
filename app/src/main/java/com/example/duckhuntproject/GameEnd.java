@@ -22,7 +22,7 @@ public class GameEnd extends AppCompatActivity {
     }
 
     public void onRestartGame (View view){
-        Intent intent = new Intent(GameEnd.this, MainActivity.class);
+        Intent intent = new Intent(GameEnd.this, StartGame.class);
         startActivity(intent);
         finish();
     }
