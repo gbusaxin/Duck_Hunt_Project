@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class GameOver extends AppCompatActivity {
+public class GameEnd extends AppCompatActivity {
 
     TextView tvScore;
 
@@ -22,7 +22,7 @@ public class GameOver extends AppCompatActivity {
     }
 
     public void onRestartGame (View view){
-        Intent intent = new Intent(GameOver.this, MainActivity.class);
+        Intent intent = new Intent(GameEnd.this, MainActivity.class);
         startActivity(intent);
         finish();
     }

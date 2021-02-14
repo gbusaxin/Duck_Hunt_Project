@@ -32,5 +32,12 @@ public class StartGame extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (bg_music != null){
+            bg_music.stop();
+            bg_music.release();
+        }
+    }
 }

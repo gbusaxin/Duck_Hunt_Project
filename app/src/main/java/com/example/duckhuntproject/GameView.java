@@ -7,21 +7,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Handler;
-import android.util.Size;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowMetrics;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class GameView extends View {
 
@@ -100,7 +95,7 @@ public class GameView extends View {
         super.onDraw(canvas);
         if (life < 1){
             gameState = false;
-            Intent intent = new Intent(context, GameOver.class);
+            Intent intent = new Intent(context, GameEnd.class);
             intent.putExtra("score", score);
             ((Activity)context).startActivity(intent);
             ((Activity)context).finish();
