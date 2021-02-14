@@ -2,6 +2,7 @@ package com.example.duckhuntproject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,6 +11,7 @@ import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.util.Size;
 import android.view.Display;
@@ -31,15 +33,18 @@ public class GameView extends View {
     final long UPDATE_MILLIS = 30;
     ArrayList<Duck1> duck1;
     ArrayList<Duck2> duck2;
-
     Bitmap ball, target;
-
     float ballX, ballY;
     float sX, sY;
     float fX, fY;
     float dX, dY;
     float tempX, tempY;
     Paint borderPaint;
+    int score = 0;
+    int life = 25;
+    Context context;
+    MediaPlayer duckHit, duckMiss, ball_throw;
+    boolean gameState = true;
 
     public GameView(Context context) {
         super(context);
@@ -74,6 +79,10 @@ public class GameView extends View {
         borderPaint = new Paint();
         borderPaint.setColor(Color.RED);
         borderPaint.setStrokeWidth(5);
+        this.context = context;
+        duckHit = MediaPlayer.create(context,R.raw.shoot_sound);
+        duckMiss = MediaPlayer.create(context,R.raw.miss);
+        ball_throw = MediaPlayer.create(context,R.raw.bird_hit);
 
 //        final WindowMetrics metrics = ((Activity)getContext()).getWindowManager().getCurrentWindowMetrics();
 //        final WindowInsets windowInsets = metrics.getWindowInsets();
@@ -89,6 +98,13 @@ public class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (life < 1){
+            gameState = false;
+            Intent intent = new Intent(context, GameOver.class);
+            intent.putExtra("score", score);
+            ((Activity)context).startActivity(intent);
+            ((Activity)context).finish();
+        }
         canvas.drawBitmap(background, null, rect, null);
         for (int i = 0; i < duck1.size(); i++) {
             canvas.drawBitmap(duck1.get(i).getBitmap(),
@@ -103,6 +119,9 @@ public class GameView extends View {
 
             if (duck1.get(i).duckX < -duck1.get(i).getWidth()) {
                 duck1.get(i).resetPosition();
+                life--;
+                if (duckMiss != null)
+                    duckMiss.start();
             }
 
             canvas.drawBitmap(duck2.get(i).getBitmap(),
@@ -115,17 +134,26 @@ public class GameView extends View {
             duck2.get(i).duckX -= duck2.get(i).velocity;
             if (duck2.get(i).duckX < -duck2.get(i).getWidth()) {
                 duck2.get(i).resetPosition();
+                life--;
+                if (duckMiss != null)
+                    duckMiss.start();
             }
 
             if (ballX <= (duck1.get(i).duckX + duck1.get(i).getWidth()) && ballX + ball.getWidth() >=
             duck1.get(i).duckX && ballY <= (duck1.get(i).duckY + duck1.get(i).getHeight())&&
             ballY >= duck1.get(i).duckY){
                 duck1.get(i).resetPosition();
+                score++;
+                if (duckHit != null)
+                    duckHit.start();
             }
             if (ballX <= (duck2.get(i).duckX + duck2.get(i).getWidth()) && ballX + ball.getWidth() >=
                     duck2.get(i).duckX && ballY <= (duck2.get(i).duckY + duck2.get(i).getHeight())&&
                     ballY >= duck2.get(i).duckY){
                 duck2.get(i).resetPosition();
+                score++;
+                if (duckHit != null)
+                    duckHit.start();
             }
 
         }
@@ -147,6 +175,7 @@ public class GameView extends View {
             tempY += dY;
         }
         canvas.drawLine(0, dHeight * .75f, dWidth, dHeight * .75f, borderPaint);
+        if (gameState)
         handler.postDelayed(runnable, UPDATE_MILLIS);
     }
 

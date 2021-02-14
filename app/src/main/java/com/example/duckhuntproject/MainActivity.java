@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    public void startGame(View view) {
+    public void onStartGame(View view) {
         Log.i("TextView","Clicked");
         startActivity(new Intent(this, StartGame.class));
         finish();
